@@ -19,6 +19,7 @@ import java.util.Map;
 public class Bot extends TelegramLongPollingBot {
     private static final Map<String, String> getenv = System.getenv();
     // getenv.get("TELEGRAM_BOT_NAME"), getenv.get("TELEGRAM_BOT_TOKEN")
+
     @Override
     public String getBotUsername() {
         return "AromaDRIVEBot";
@@ -40,22 +41,27 @@ public class Bot extends TelegramLongPollingBot {
         var user = msg.getFrom();
         var id = user.getId();
 
-        System.out.println(id);
+        // Initialize Buttons
+        var games = InlineKeyboardButton.builder()
+                .text("Арома игры \uD83C\uDFB2").callbackData("games")
+                .build();
+        var oils = InlineKeyboardButton.builder()
+                .text("Арома масла \uD83C\uDF31").callbackData("oils")
+                .build();
 
-        // Button 1
         var next = InlineKeyboardButton.builder()
                 .text("Next ➡\uFE0F").callbackData("next")
                 .build();
-        // Button 2
+
         var back = InlineKeyboardButton.builder()
                 .text("Back ⬅\uFE0F").callbackData("back")
                 .build();
-        // Button 3
+
         var url = InlineKeyboardButton.builder()
                 .text("Web-site \uD83D\uDDA5")
                 .url("http://project7291932.tilda.ws/")
                 .build();
-        // Button 4
+
         var text = InlineKeyboardButton.builder()
                 .text("Text \uD83D\uDCD1")
                 .callbackData("text")
@@ -66,8 +72,9 @@ public class Bot extends TelegramLongPollingBot {
         InlineKeyboardMarkup keyboard_1; // Initialize Keyboard
         InlineKeyboardMarkup keyboard_2;
         keyboard_1 = InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(text))
-                .keyboardRow(List.of(next)).build();
+                .keyboardRow(List.of(games))
+                .keyboardRow(List.of(oils))
+                .build();
         keyboard_2 = InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(url))
                 .keyboardRow(List.of(back))
@@ -75,7 +82,7 @@ public class Bot extends TelegramLongPollingBot {
 
         if(msg.isCommand()){
             if(msg.getText().equals("/start")) {
-                sendMenu(id, "<b>Выберите действие \uD83D\uDE0E</b>", keyboard_1);
+                sendMenu(id, "<b>Выберите раздел \uD83D\uDE0E</b>", keyboard_1);
             }
             else if (msg.getText().equals("/help"))
                 sendMenu(id, "<b>Выберите действие \uD83D\uDE0E</b>", keyboard_2);
@@ -84,9 +91,16 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
+    String next = String.valueOf(InlineKeyboardButton.builder()
+            .text("Next").callbackData("next")
+            .build());
+    private InlineKeyboardMarkup keyboardM1;
+
+
+
+
     private void handleButtonClick(CallbackQuery callbackQuery) {
-        System.out.println (callbackQuery.getMessage().getChatId());
-        System.out.println (callbackQuery.getFrom().getId());
+//        System.out.println (callbackQuery.getMessage().getChatId());
 
         // Get the data from the button that was clicked
         String buttonData = callbackQuery.getData();
@@ -96,24 +110,7 @@ public class Bot extends TelegramLongPollingBot {
         long chatId = callbackQuery.getMessage().getChatId();
 
         String text = "What is Lorem Ipsum?\n Lorem Ipsum is simply dummy text of the printing and typesetting " +
-                "industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an " +
-                "unknown printer took a galley of type and scrambled it to make a type specimen book. It has " +
-                "survived not only five centuries, but also the leap into electronic typesetting, remaining " +
-                "essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets " +
-                "containing Lorem Ipsum passages, and more recently with desktop publishing software " +
-                "like Aldus PageMaker including versions of Lorem Ipsum";
-
-        // Replace the following code with your desired logic based on the button data
-        if (buttonData.equals("text")) {
-//            System.out.println ("What is Lorem Ipsum?\n" +
-//                    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-//            );
-            sendText(id, text);
-        } else if (buttonData.equals("next")) {
-
-        } else if (buttonData.equals("back")) {
-
-        }
+                "industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an ";
 
         EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
                 .chatId(String.valueOf(chatId)).messageId(messageId).build();
@@ -121,9 +118,75 @@ public class Bot extends TelegramLongPollingBot {
         AnswerCallbackQuery close = AnswerCallbackQuery.builder()
                 .callbackQueryId(queryId).build();
 
+        EditMessageText newTxt = EditMessageText.builder()
+                .chatId(String.valueOf(chatId))
+                .messageId(messageId).text("").build();
+
+//        DeleteMessage delMsg = DeleteMessage.builder().build();
+
+
+// Buttons for new keyboard
+        var games = InlineKeyboardButton.builder()
+                .text("Арома игры \uD83C\uDFB2").callbackData("games")
+                .build();
+        var oils = InlineKeyboardButton.builder()
+                .text("Арома масла \uD83C\uDF31").callbackData("oils")
+                .build();
+        var game_1 = InlineKeyboardButton.builder()
+                .text("Цветик-семицветик \uD83C\uDF38")
+                .callbackData("game_1")
+                .build();
+        var game_2 = InlineKeyboardButton.builder()
+                .text("Остров сокровищ \uD83C\uDFF4\u200D☠\uFE0F")
+                .callbackData("game_2")
+                .build();
+        var back = InlineKeyboardButton.builder()
+                .text("Back ⬅\uFE0F")
+                .callbackData("back")
+                .build();
+
+        InlineKeyboardMarkup startKeyboard;
+        InlineKeyboardMarkup gamesKeyboard;
+        InlineKeyboardMarkup oilsKeyboard;
+        InlineKeyboardMarkup backKeyboard;
+
+        startKeyboard = InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(games))
+                .keyboardRow(List.of(oils))
+                .build();
+        gamesKeyboard = InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(game_1))
+                .keyboardRow(List.of(game_2))
+                .keyboardRow(List.of(back))
+                .build();
+        oilsKeyboard = InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(back))
+                .build();
+        backKeyboard = InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(back))
+                .build();
+
+        // Replace the following code with your desired logic based on the button data
+        if (buttonData.equals("games")) {
+//            sendText(id, text);
+            newKb.setReplyMarkup(gamesKeyboard);
+        } else if (buttonData.equals("oils")) {
+            sendText(id, "Здесь будет раздел об аромамаслах");
+            newKb.setReplyMarkup(oilsKeyboard);
+        } else if (buttonData.equals("game_1")) {
+            sendText(id, "Игра 'Цветик Семицветик'. \n - описание игры \n - представление ведущих \n - график проведения игр \n - запись (?)");
+            newKb.setReplyMarkup(backKeyboard);
+        } else if (buttonData.equals("game_2")) {
+            sendText(id, "Игра 'Остров сокровищ'. \n - описание игры \n - представление ведущих \n - график проведения игр \n - запись (?)");
+            newKb.setReplyMarkup(backKeyboard);
+        } else if (buttonData.equals("back")) {
+            newKb.setReplyMarkup(startKeyboard);
+        }
+
         try {
             execute(close);
             execute(newKb);
+//            execute(newTxt);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -171,41 +234,10 @@ public class Bot extends TelegramLongPollingBot {
         SendMessage sm = SendMessage.builder().chatId(who.toString())
                 .parseMode("HTML").text(txt)
                 .replyMarkup(kb).build();
-
         try {
             execute(sm);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void buttonTap(Long id, String queryId, String data, int msgId) {
-
-        EditMessageText newTxt = EditMessageText.builder()
-                .chatId(id.toString())
-                .messageId(msgId).text("").build();
-
-        EditMessageReplyMarkup newKb = EditMessageReplyMarkup.builder()
-                .chatId(id.toString()).messageId(msgId).build();
-
-        if(data.equals("next")) {
-            newTxt.setText("MENU 2");
-//            newKb.setReplyMarkup();
-        } else if(data.equals("back")) {
-            newTxt.setText("MENU 1");
-//            newKb.setReplyMarkup();
-        }
-
-        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
-                .callbackQueryId(queryId).build();
-
-        try {
-            execute(close);
-            execute(newTxt);
-            execute(newKb);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }
